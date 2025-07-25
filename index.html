@@ -283,14 +283,28 @@
               const node = editor.getNodeFromId(id);
               if (!node || !node.outputs) continue;
 
-               if (node) {
-                  const command = node.data.command || node.name || `Node ${id}`;
-                  const args = node.data.args || "";
-                  const fullCommand = args ? `${command} ${args}` : command;
-                  console.log(`Run command: ${fullCommand}`);
-                  console.log(node);
-                  
+              if (node) {
+                const command = node.data.command || node.name || `Node ${id}`;
+
+                // Lấy DOM node
+                const domNode = document.querySelector(`#node-${id}`);
+                let args = "";
+
+                if (domNode) {
+                  const inputs = domNode.querySelectorAll("input[df-name]");
+                  const values = Array.from(inputs)
+                    .map(input => {
+                      const name = input.getAttribute("df-name") || "arg";
+                      const value = input.value.trim();
+                      return `${name}:${value}`;
+                    })
+                    .join(" ");
+                  args = values;
                 }
+
+                const fullCommand = args ? `${command} ${args}` : command;
+                console.log(`Run command: ${fullCommand}`);
+              }
 
               for (let outputKey in node.outputs) {
                 const connections = node.outputs[outputKey].connections;
@@ -560,17 +574,17 @@
                     <div class="title-box"><i class="fas fa-play"></i> do jmove</div>
                     <div class="box">
                       <p>jt1</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="jt1">
                       <p>jt2</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="jt2">
                       <p>jt3</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="jt3">
                       <p>jt4</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="jt4">
                       <p>jt5</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="jt5">
                       <p>jt6</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="jt6">
                     </div>
                   </div>
                   `;
@@ -582,17 +596,17 @@
                     <div class="title-box"><i class="fas fa-play"></i> add/subtract</div>
                     <div class="box">
                       <p>x</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="x">
                       <p>y</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="y">
                       <p>z</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="z">
                       <p>rx</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="rx">
                       <p>ry</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="ry">
                       <p>rz</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="rz">
                     </div>
                   </div>
                   `;
@@ -604,17 +618,17 @@
                     <div class="title-box"><i class="fas fa-play"></i> multiple/divine</div>
                     <div class="box">
                       <p>x</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="x">
                       <p>y</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="y">
                       <p>z</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="z">
                       <p>rx</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="rx">
                       <p>ry</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="ry">
                       <p>rz</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="rz">
                     </div>
                   </div>
                   `;
@@ -626,17 +640,17 @@
                     <div class="title-box"><i class="fas fa-play"></i> do imove</div>
                     <div class="box">
                       <p>x</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="x">
                       <p>y</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="y">
                       <p>z</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="z">
                       <p>rx</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="rx">
                       <p>ry</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="ry">
                       <p>rz</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="rz">
                     </div>
                   </div>
                   `;
@@ -648,17 +662,17 @@
                     <div class="title-box"><i class="fas fa-play"></i> do tmove</div>
                     <div class="box">
                       <p>trq1</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="trq1">
                       <p>trq2</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="trq2">
                       <p>trq3</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="trq3">
                       <p>trq4</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="trq4">
                       <p>trq5</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="trq5">
                       <p>trq6</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="trq6">
                     </div>
                   </div>
                   `;
@@ -670,11 +684,11 @@
                     <div class="title-box"><i class="fas fa-play"></i> do fmove</div>
                     <div class="box">
                       <p>fx</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="fx">
                       <p>fy</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="fy">
                       <p>fz</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="fz">
                     </div>
                   </div>
                   `;
@@ -694,17 +708,17 @@
                     <div class="title-box"><i class="fas fa-play"></i> set sysbase</div>
                     <div class="box">
                       <p>x</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="x">
                       <p>y</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="y">
                       <p>z</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="z">
                       <p>rx</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="rx">
                       <p>ry</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="ry">
                       <p>rz</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="rz">
                     </div>
                   </div>
                   `;
@@ -716,17 +730,17 @@
                     <div class="title-box"><i class="fas fa-play"></i> set base</div>
                     <div class="box">
                       <p>x</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="x">
                       <p>y</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="y">
                       <p>z</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="z">
                       <p>rx</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="rx">
                       <p>ry</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="ry">
                       <p>rz</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="rz">
                     </div>
                   </div>
                   `;
@@ -738,17 +752,17 @@
                     <div class="title-box"><i class="fas fa-play"></i> set tool</div>
                     <div class="box">
                       <p>x</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="x">
                       <p>y</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="y">
                       <p>z</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="z">
                       <p>rx</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="rx">
                       <p>ry</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="ry">
                       <p>rz</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="rz">
                     </div>
                   </div>
                   `;
@@ -760,17 +774,17 @@
                     <div class="title-box"><i class="fas fa-play"></i> set home</div>
                     <div class="box">
                       <p>x</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="x">
                       <p>y</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="y">
                       <p>z</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="z">
                       <p>rx</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="rx">
                       <p>ry</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="ry">
                       <p>rz</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="rz">
                     </div>
                   </div>
                   `;
@@ -798,17 +812,17 @@
                     <div class="title-box"><i class="fas fa-play"></i> e2q</div>
                     <div class="box">
                       <p>x</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="x">
                       <p>y</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="y">
                       <p>z</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="z">
                       <p>rx</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="rx">
                       <p>ry</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="ry">
                       <p>rz</p>
-                      <input type="text" df-name>
+                      <input type="text" df-name="rz">
                     </div>
                   </div>
                   `;
