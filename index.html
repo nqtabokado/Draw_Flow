@@ -114,9 +114,9 @@
         </div>
         <div class="col-right">
             <div class="menu">
-                <ul>
-                    <li onclick="editor.changeModule('Home'); changeModule('Task #1', event);" class="selected">Task #1</li>
-                    <li onclick="editor.changeModule('Other'); changeModule('Task #2', event);">Task #2</li>
+                <ul id="module-list">
+                    <li onclick="editor.changeModule('Home'); changeModule('module-li-22', event);" class="selected">Task #1</li>
+                    <li onclick="editor.changeModule('Other'); changeModule('module-li-23', event);">Task #2</li>
                 </ul>
             </div>
             <div id="drawflow" ondrop="drop(event)" ondragover="allowDrop(event)">
@@ -126,6 +126,7 @@
         })">Export</div>
                 <div class="btn-import" onclick="">Import</div>
                 <div class="btn-clear" onclick="clearTask()">Clear</div>
+                <div class="btn-add-module" onclick="addNewModule()">Add Module</div>
                 <div class="btn-lock">
                     <i id="lock" class="fas fa-lock" onclick="editor.editor_mode='fixed'; changeMode('lock');"></i>
                     <i id="unlock" class="fas fa-lock-open" onclick="editor.editor_mode='edit'; changeMode('unlock');"
@@ -282,6 +283,15 @@
               const node = editor.getNodeFromId(id);
               if (!node || !node.outputs) continue;
 
+               if (node) {
+                  const command = node.data.command || node.name || `Node ${id}`;
+                  const args = node.data.args || "";
+                  const fullCommand = args ? `${command} ${args}` : command;
+                  console.log(`Run command: ${fullCommand}`);
+                  console.log(node);
+                  
+                }
+
               for (let outputKey in node.outputs) {
                 const connections = node.outputs[outputKey].connections;
                 connections.forEach(conn => {
@@ -306,6 +316,54 @@
           }
         }
 
+        let taskCounter = 2;
+
+        function addNewModule() {
+          taskCounter++;
+          const newModuleKey = "Task_" + taskCounter;
+          const newModuleName = "Task #" + taskCounter;
+          const nodeId = 100 + taskCounter;
+
+          const newModuleData = {
+            data: {
+              [nodeId]: {
+                id: nodeId,
+                name: "task" + taskCounter,
+                data: {},
+                class: "task" + taskCounter,
+                html: `<div class='title-box'><i class='far fa-chart-bar'></i> ${newModuleName}</div>`,
+                typenode: false,
+                inputs: {},
+                outputs: {
+                  output_1: { connections: [] }
+                },
+                pos_x: 100,
+                pos_y: 52
+              }
+            }
+          };
+
+          // Add module to drawflow
+          editor.addModule(newModuleKey);
+          editor.drawflow.drawflow[newModuleKey] = newModuleData;
+          
+          // Create new <li> with correct behavior
+          const li = document.createElement("li");
+          li.textContent = newModuleName;
+          li.id = `module-li-${nodeId}`;
+
+          // 👇 Add the correct event listener like the HTML inline version
+          li.onclick = function(event) {
+            editor.changeModule(newModuleKey);
+            changeModule(li.id, event);
+          };
+
+          // Insert before the "Add Module" button
+          document.getElementById("module-list").insertBefore(
+            li,
+            document.getElementById("add-module-button")
+          );
+        }
 
         function addNodeToDrawFlow(name, pos_x, pos_y) {
             if (editor.editor_mode === 'fixed') {
@@ -806,11 +864,7 @@
         }
 
         function changeModule(task, event) {
-            if (task === 'Task #1') {
-              idTask = 22;
-            } else if (task === 'Task #2') {
-              idTask = 23;
-            }
+            idTask = parseInt(task.replace('module-li-', ''));
             var all = document.querySelectorAll(".menu ul li");
             for (var i = 0; i < all.length; i++) {
                 all[i].classList.remove('selected');
